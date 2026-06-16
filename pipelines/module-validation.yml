@@ -131,3 +131,51 @@ stages:
         targetType: inline
         script: |
           echo "Add Microsoft Security DevOps or Gitleaks task here."
+
+    - task: Bash@3
+      displayName: Install Infracost
+      continueOnError: true
+      inputs:
+        targetType: inline
+        script: |
+          curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
+
+    - task: Bash@3
+      displayName: Run Infracost cost estimation
+      continueOnError: true
+      inputs:
+        targetType: inline
+        script: |
+          for d in examples/*/; do
+            if [ -f "$d/main.tf" ]; then
+              echo "Analyzing costs for $d"
+              cd "$d"
+              terraform init -backend=false
+              infracost breakdown --path . --format json --out-file /tmp/$(basename "$d")-costs.json || true
+              cd -
+            fi
+          done
+
+    - task: Bash@3
+      displayName: Validate example configurations
+      inputs:
+        targetType: inline
+        script: |
+          set -e
+          for d in examples/*/; do
+            if [ -f "$d/main.tf" ]; then
+              echo "Validating example: $(basename "$d")"
+              cd "$d"
+              terraform init -backend=false
+              terraform validate
+              cd -
+            fi
+          done
+          echo "All examples validated successfully"
+
+    - task: PublishBuildArtifacts@1
+      displayName: Publish validation reports
+      continueOnError: true
+      inputs:
+        pathToPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: 'validation-reports'
