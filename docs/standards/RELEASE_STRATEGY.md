@@ -28,11 +28,22 @@ This document defines the release process, versioning strategy, and lifecycle ma
 
 ### Phase 1: Planning (2 weeks before release)
 
-- [ ] Create release branch: `git checkout -b release/v1.X.X`
+- [ ] Create release branch from `develop`: `git checkout -b release/v1.X.X develop`
 - [ ] Identify all changes since last release
 - [ ] Update CHANGELOG.md with all changes
 - [ ] Review for NERC CIP compliance impact
 - [ ] Create release note draft
+
+### Branching and Protection Rules
+
+- `main` is the production branch and is protected.
+- `develop` is the integration branch and is protected.
+- Use `feature/*` branches for new capabilities and merge them into `develop`.
+- Use `bugfix/*` branches for bug fixes and merge them into `develop`.
+- Use `hotfix/*` branches from `main` for urgent fixes, then merge into both `main` and `develop`.
+- Use `release/*` branches from `develop` to stabilize a release, then merge into `main`.
+- All updates to `main` and `develop` must be made via pull request and require at least one approving review.
+- `main` additionally requires CODEOWNERS approval.
 
 ### Phase 2: Validation (1 week before release)
 
