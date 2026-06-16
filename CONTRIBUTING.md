@@ -10,7 +10,26 @@ develop     - integration branch
 feature/*   - new module changes
 bugfix/*    - bug fixes
 hotfix/*    - urgent fixes
+release/*   - release preparation and stabilization
 ```
+
+## Branch Protection
+
+The repository enforces Git Flow protections for development and release branches.
+
+- `main` and `develop` are protected branches.
+- Direct pushes to `main` and `develop` are prohibited.
+- All changes must be merged via pull request.
+- `main` requires at least one approving review and CODEOWNERS approval.
+- `develop` requires at least one approving review.
+- Required checks for protected branches:
+  - `terraform fmt`
+  - `terraform validate`
+  - `tflint`
+  - `checkov`
+  - `trivy config`
+  - `terraform-docs`
+- `feature/*`, `bugfix/*`, `hotfix/*`, and `release/*` branches are created from `develop` or `main` as appropriate.
 
 ## Pull Request Requirements
 
