@@ -1,0 +1,10 @@
+framework:
+  - terraform
+
+compact: true
+quiet: false
+
+skip-check:
+  # Add approved exceptions here with justification in PR.
+  # Example:
+  # - CKV_AZURE_999

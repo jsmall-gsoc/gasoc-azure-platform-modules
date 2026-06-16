@@ -1,0 +1,53 @@
+trigger: none
+
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+parameters:
+- name: releaseVersion
+  displayName: Release Version
+  type: string
+  default: v0.1.0
+
+stages:
+- stage: ReleaseValidation
+  displayName: Release Validation
+  jobs:
+  - job: ValidateRelease
+    displayName: Validate release package
+    steps:
+    - checkout: self
+      persistCredentials: true
+
+    - task: Bash@3
+      displayName: Validate version format
+      inputs:
+        targetType: inline
+        script: |
+          VERSION="${{ parameters.releaseVersion }}"
+          if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version: $VERSION"
+            exit 1
+          fi
+          echo "Release version format valid: $VERSION"
+
+    - task: Bash@3
+      displayName: Ensure changelog updated
+      inputs:
+        targetType: inline
+        script: |
+          grep "${{ parameters.releaseVersion }}" CHANGELOG.md || {
+            echo "CHANGELOG.md does not contain ${{ parameters.releaseVersion }}"
+            exit 1
+          }
+
+    - task: Bash@3
+      displayName: Release guidance
+      inputs:
+        targetType: inline
+        script: |
+          echo "After approval, create tag manually or via controlled release pipeline:"
+          echo "git tag -a ${{ parameters.releaseVersion }} -m 'Release ${{ parameters.releaseVersion }}'"
+          echo "git push origin ${{ parameters.releaseVersion }}"

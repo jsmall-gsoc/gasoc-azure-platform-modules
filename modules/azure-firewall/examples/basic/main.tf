@@ -1,0 +1,57 @@
+provider "azurerm" {
+  features {}
+}
+
+
+locals {
+  location = "eastus"
+
+  tags = {
+    Environment        = "Prod"
+    Application        = "Example"
+    Owner              = "CloudEngineering"
+    CostCenter         = "GSOC-IT"
+    ManagedBy          = "Terraform"
+    BusinessUnit       = "EnterpriseIT"
+    DataClassification = "Internal"
+    Criticality        = "Medium"
+    BackupRequired     = "No"
+    DisasterRecovery   = "No"
+  }
+}
+
+
+resource "azurerm_resource_group" "example" {
+  name     = "rg-prod-eus-network"
+  location = local.location
+  tags     = local.tags
+}
+
+resource "azurerm_virtual_network" "hub" {
+  name                = "vnet-prod-eus-hub"
+  resource_group_name = azurerm_resource_group.example.name
+  location            = local.location
+  address_space       = ["10.10.0.0/16"]
+  tags                = local.tags
+}
+
+resource "azurerm_subnet" "firewall" {
+  name                 = "AzureFirewallSubnet"
+  resource_group_name  = azurerm_resource_group.example.name
+  virtual_network_name = azurerm_virtual_network.hub.name
+  address_prefixes     = ["10.10.0.0/26"]
+}
+
+module "azure_firewall" {
+  source = "../../"
+
+  name                     = "afw-prod-eus-hub"
+  public_ip_name           = "pip-prod-eus-afw-01"
+  firewall_policy_name     = "afwp-prod-eus-hub"
+  resource_group_name      = azurerm_resource_group.example.name
+  location                 = local.location
+  firewall_subnet_id       = azurerm_subnet.firewall.id
+  sku                      = "Standard"
+  threat_intelligence_mode = "Alert"
+  tags                     = local.tags
+}

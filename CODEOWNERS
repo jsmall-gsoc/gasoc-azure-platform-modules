@@ -1,0 +1,23 @@
+# Default reviewers
+* @CloudPlatformTeam
+
+# Security and governance modules
+/modules/policy-assignment/ @CloudPlatformTeam @SecurityTeam
+/modules/nist-sp-800-53-r5/ @CloudPlatformTeam @SecurityTeam
+/modules/defender-for-cloud/ @CloudPlatformTeam @SecurityTeam
+/modules/key-vault/ @CloudPlatformTeam @SecurityTeam
+
+# Networking modules
+/modules/virtual-network/ @CloudPlatformTeam @NetworkTeam
+/modules/subnet/ @CloudPlatformTeam @NetworkTeam
+/modules/network-security-group/ @CloudPlatformTeam @NetworkTeam
+/modules/route-table/ @CloudPlatformTeam @NetworkTeam
+/modules/vnet-peering/ @CloudPlatformTeam @NetworkTeam
+/modules/private-dns-zone/ @CloudPlatformTeam @NetworkTeam
+/modules/private-endpoint/ @CloudPlatformTeam @NetworkTeam
+/modules/azure-firewall/ @CloudPlatformTeam @NetworkTeam @SecurityTeam
+/modules/bastion/ @CloudPlatformTeam @NetworkTeam
+/modules/vpn-gateway/ @CloudPlatformTeam @NetworkTeam
+
+# Pipeline changes
+/pipelines/ @CloudPlatformTeam @DevSecOpsTeam
