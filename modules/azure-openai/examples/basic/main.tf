@@ -19,19 +19,18 @@ locals {
   }
 }
 
-module "rg_ai" {
-  source   = "../../modules/resource-group"
+resource "azurerm_resource_group" "example" {
   name     = "rg-prod-eus-ai"
   location = local.location
   tags     = local.tags
 }
 
 module "azure_openai" {
-  source = "../../modules/azure-openai"
+  source = "../../"
 
   name                               = "aoai-prod-eus-platform01"
   location                           = local.location
-  resource_group_name                = module.rg_ai.name
+  resource_group_name                = azurerm_resource_group.example.name
   sku_name                           = "S0"
   custom_subdomain_name              = "aoai-prod-eus-platform01"
   public_network_access_enabled      = true
