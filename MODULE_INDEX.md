@@ -2,8 +2,8 @@
 
 > **Note:** This index is auto-generated. For details, see the [Module Generation Script](#auto-generation).
 
-**Last Updated:** 2024
-**Total Modules:** 23
+**Last Updated:** 2026-06-17 15:03:10
+**Total Modules:** 25
 
 ## Quick Navigation
 
@@ -51,11 +51,19 @@
 - **Documentation:** [nist-sp-800-53-r5/README.md](./modules/nist-sp-800-53-r5/README.md)
 - **Compliance:** NIST SP 800-53 R5, NERC CIP
 
+### 5. **subscription-bootstrap**
+- **Category:** Governance
+- **Maturity:** Preview
+- **Status:** 🔄 In Development
+- **Purpose:** Subscription foundation bootstrap for governance, logging, security, and RBAC
+- **Documentation:** [subscription-bootstrap/README.md](./modules/subscription-bootstrap/README.md)
+- **Outputs:** `management_group_id`, `log_analytics_workspace_id`, `recovery_services_vault_id`
+
 ---
 
 ## Networking
 
-### 5. **virtual-network**
+### 6. **virtual-network**
 - **Category:** Networking
 - **Maturity:** Production Ready
 - **Status:** ✅ Stable
@@ -65,7 +73,7 @@
 - **Inputs:** `name`, `location`, `resource_group_name`, `address_space`
 - **Outputs:** `id`, `name`, `address_space`
 
-### 6. **subnet**
+### 7. **subnet**
 - **Category:** Networking
 - **Maturity:** Production Ready
 - **Status:** ✅ Stable
@@ -74,7 +82,7 @@
 - **Inputs:** `name`, `resource_group_name`, `virtual_network_name`, `address_prefixes`
 - **Outputs:** `id`, `name`, `address_prefixes`
 
-### 7. **network-security-group**
+### 8. **network-security-group**
 - **Category:** Networking
 - **Maturity:** Preview
 - **Status:** 🔄 In Development
@@ -83,35 +91,35 @@
 - **Inputs:** `name`, `location`, `resource_group_name`
 - **Outputs:** `id`, `name`
 
-### 8. **route-table**
+### 9. **route-table**
 - **Category:** Networking
 - **Maturity:** Preview
 - **Status:** 🔄 In Development
 - **Purpose:** User Defined Routes (UDR) configuration
 - **Documentation:** [route-table/README.md](./modules/route-table/README.md)
 
-### 9. **vnet-peering**
+### 10. **vnet-peering**
 - **Category:** Networking
 - **Maturity:** Preview
 - **Status:** 🔄 In Development
 - **Purpose:** VNet-to-VNet peering establishment
 - **Documentation:** [vnet-peering/README.md](./modules/vnet-peering/README.md)
 
-### 10. **private-dns-zone**
+### 11. **private-dns-zone**
 - **Category:** Networking
 - **Maturity:** Preview
 - **Status:** 🔄 In Development
 - **Purpose:** Private DNS zone creation and linking
 - **Documentation:** [private-dns-zone/README.md](./modules/private-dns-zone/README.md)
 
-### 11. **private-endpoint**
+### 12. **private-endpoint**
 - **Category:** Networking
 - **Maturity:** Preview
 - **Status:** 🔄 In Development
 - **Purpose:** PaaS private endpoint deployment
 - **Documentation:** [private-endpoint/README.md](./modules/private-endpoint/README.md)
 
-### 12. **azure-firewall**
+### 13. **azure-firewall**
 - **Category:** Networking/Security
 - **Maturity:** Experimental
 - **Status:** ⚠️ Experimental
@@ -119,7 +127,7 @@
 - **Purpose:** Azure Firewall deployment for advanced traffic filtering
 - **Documentation:** [azure-firewall/README.md](./modules/azure-firewall/README.md)
 
-### 13. **bastion**
+### 14. **bastion**
 - **Category:** Networking/Security
 - **Maturity:** Experimental
 - **Status:** ⚠️ Experimental
@@ -127,7 +135,7 @@
 - **Purpose:** Azure Bastion host deployment for secure VM access
 - **Documentation:** [bastion/README.md](./modules/bastion/README.md)
 
-### 14. **vpn-gateway**
+### 15. **vpn-gateway**
 - **Category:** Networking
 - **Maturity:** Experimental
 - **Status:** ⚠️ Experimental
@@ -139,7 +147,7 @@
 
 ## Security & Compliance
 
-### 15. **key-vault**
+### 16. **key-vault**
 - **Category:** Security
 - **Maturity:** Preview
 - **Status:** 🔄 In Development
@@ -149,7 +157,7 @@
 - **Outputs:** `id`, `name`, `vault_uri`
 - **Security Features:** Purge protection, RBAC, soft delete
 
-### 16. **defender-for-cloud**
+### 17. **defender-for-cloud**
 - **Category:** Security
 - **Maturity:** Experimental
 - **Status:** ⚠️ Experimental
@@ -157,11 +165,22 @@
 - **Documentation:** [defender-for-cloud/README.md](./modules/defender-for-cloud/README.md)
 - **Plans Supported:** Virtual Machines, SQL Servers, App Service, Storage, Key Vault
 
+### 18. **azure-openai**
+- **Category:** Security
+- **Maturity:** Preview
+- **Status:** 🔄 In Development
+- **Purpose:** Azure OpenAI cognitive account with model deployments, diagnostics, and network controls
+- **Documentation:** [azure-openai/README.md](./modules/azure-openai/README.md)
+- **Example:** [azure-openai](./examples/azure-openai)
+- **Inputs:** `name`, `location`, `resource_group_name`, `model_deployments`
+- **Outputs:** `id`, `name`, `endpoint`, `principal_id`, `model_deployment_ids`, `private_endpoint_id`
+- **Security Features:** Private endpoint support, network ACLs, diagnostic logging
+
 ---
 
 ## Operations & Monitoring
 
-### 17. **log-analytics**
+### 19. **log-analytics**
 - **Category:** Operations
 - **Maturity:** Production Ready
 - **Status:** ✅ Stable
@@ -170,28 +189,28 @@
 - **Inputs:** `name`, `location`, `resource_group_name`, `retention_in_days`
 - **Outputs:** `id`, `name`, `workspace_id`, `primary_shared_key`
 
-### 18. **diagnostic-settings**
+### 20. **diagnostic-settings**
 - **Category:** Operations
 - **Maturity:** Preview
 - **Status:** 🔄 In Development
 - **Purpose:** Diagnostic settings for resource logging and forwarding
 - **Documentation:** [diagnostic-settings/README.md](./modules/diagnostic-settings/README.md)
 
-### 19. **monitor-action-group**
+### 21. **monitor-action-group**
 - **Category:** Operations
 - **Maturity:** Preview
 - **Status:** 🔄 In Development
 - **Purpose:** Alert action group for notifications
 - **Documentation:** [monitor-action-group/README.md](./modules/monitor-action-group/README.md)
 
-### 20. **monitor-alert**
+### 22. **monitor-alert**
 - **Category:** Operations
 - **Maturity:** Preview
 - **Status:** 🔄 In Development
 - **Purpose:** Metric alert rule creation
 - **Documentation:** [monitor-alert/README.md](./modules/monitor-alert/README.md)
 
-### 21. **recovery-services-vault**
+### 23. **recovery-services-vault**
 - **Category:** Operations
 - **Maturity:** Preview
 - **Status:** 🔄 In Development
@@ -202,7 +221,7 @@
 
 ## DevSecOps & Automation
 
-### 22. **storage-account**
+### 24. **storage-account**
 - **Category:** Platform
 - **Maturity:** Preview
 - **Status:** 🔄 In Development
@@ -210,7 +229,7 @@
 - **Documentation:** [storage-account/README.md](./modules/storage-account/README.md)
 - **Security Features:** TLS enforcement, blob encryption, SAS token support
 
-### 23. **terraform-backend**
+### 25. **terraform-backend**
 - **Category:** DevSecOps
 - **Maturity:** Preview
 - **Status:** 🔄 In Development
