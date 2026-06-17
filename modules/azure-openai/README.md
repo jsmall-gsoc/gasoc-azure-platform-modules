@@ -13,11 +13,11 @@ This module provisions an Azure OpenAI cognitive account with optional model dep
 
 ## Example
 
-A complete working example is available at [examples/azure-openai/main.tf](../../examples/azure-openai/main.tf).
+A complete working example is available at [examples/basic/main.tf](./examples/basic/main.tf).
 
 ```hcl
 module "azure_openai" {
-  source = "../../modules/azure-openai"
+  source = "../../"
 
   name                               = "aoai-prod-eus-platform01"
   location                           = "eastus"
