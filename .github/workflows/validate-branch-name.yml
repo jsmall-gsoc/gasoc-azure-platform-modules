@@ -1,0 +1,127 @@
+name: Validate Branch Name
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - 'feature/**'
+      - 'bugfix/**'
+      - 'hotfix/**'
+      - 'release/**'
+      - 'docs/**'
+      - 'chore/**'
+
+permissions:
+  pull-requests: write
+
+jobs:
+  validate-branch-name:
+    runs-on: ubuntu-latest
+    name: Check Branch Naming Convention
+    
+    steps:
+      - name: Get branch name
+        id: branch
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            BRANCH_NAME="${{ github.head_ref }}"
+          else
+            BRANCH_NAME="${{ github.ref_name }}"
+          fi
+          echo "name=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+          echo "Branch name: ${BRANCH_NAME}"
+
+      - name: Validate branch name format
+        id: validate
+        run: |
+          BRANCH_NAME="${{ steps.branch.outputs.name }}"
+          
+          # Reject protected branches
+          if [[ "$BRANCH_NAME" =~ ^(main|develop)$ ]]; then
+            echo "error=Cannot push directly to protected branch '${BRANCH_NAME}'" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
+          # Define valid patterns
+          VALID=false
+          
+          # feature/{module}/{description}
+          if [[ $BRANCH_NAME =~ ^feature/[a-z0-9-]+/[a-z0-9-]+$ ]]; then
+            VALID=true
+            TYPE="Feature"
+          fi
+          
+          # bugfix/{module}/{description}
+          if [[ $BRANCH_NAME =~ ^bugfix/[a-z0-9-]+/[a-z0-9-]+$ ]]; then
+            VALID=true
+            TYPE="Bugfix"
+          fi
+          
+          # hotfix/{module}/{description}
+          if [[ $BRANCH_NAME =~ ^hotfix/[a-z0-9-]+/[a-z0-9-]+$ ]]; then
+            VALID=true
+            TYPE="Hotfix"
+          fi
+          
+          # release/vX.Y.Z
+          if [[ $BRANCH_NAME =~ ^release/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            VALID=true
+            TYPE="Release"
+          fi
+          
+          # docs/{description}
+          if [[ $BRANCH_NAME =~ ^docs/[a-z0-9-]+$ ]]; then
+            VALID=true
+            TYPE="Documentation"
+          fi
+          
+          # chore/{description}
+          if [[ $BRANCH_NAME =~ ^chore/[a-z0-9-]+$ ]]; then
+            VALID=true
+            TYPE="Chore"
+          fi
+          
+          if [[ "$VALID" == true ]]; then
+            echo "valid=true" >> $GITHUB_OUTPUT
+            echo "type=${TYPE}" >> $GITHUB_OUTPUT
+          else
+            echo "error=Branch name does not follow naming conventions" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Comment on PR with validation result
+        if: github.event_name == 'pull_request' && success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branchType = "${{ steps.validate.outputs.type }}";
+            const branchName = "${{ steps.branch.outputs.name }}";
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `✅ Branch name validated: **${branchType}** branch (\`${branchName}\`)`
+            });
+
+      - name: Fail if validation failed
+        if: failure() && steps.validate.outcome == 'failure'
+        run: |
+          echo "❌ Branch validation failed"
+          echo ""
+          echo "Branch name must match one of these patterns:"
+          echo "  feature/{module-name}/{description}"
+          echo "  bugfix/{module-name|general}/{description}"
+          echo "  hotfix/{module-name|general}/{description}"
+          echo "  release/v{major}.{minor}.{patch}"
+          echo "  docs/{description}"
+          echo "  chore/{description}"
+          echo ""
+          echo "Examples:"
+          echo "  feature/azure-firewall/add-diagnostic-settings"
+          echo "  bugfix/key-vault/fix-purge-protection-policy"
+          echo "  hotfix/general/critical-security-patch"
+          echo "  release/v1.2.3"
+          echo "  docs/branch-naming-convention"
+          echo "  chore/update-terraform-version"
+          exit 1

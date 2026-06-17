@@ -7,7 +7,7 @@ locals {
 
   tags = {
     Environment        = "Prod"
-    Application        = "GovernanceAI"
+    Application        = "AIPlatform"
     Owner              = "CloudEngineering"
     CostCenter         = "GSOC-IT"
     ManagedBy          = "Terraform"
@@ -19,29 +19,20 @@ locals {
   }
 }
 
-module "rg_governance" {
-  source   = "../../modules/resource-group"
-  name     = "rg-prod-eus-governance"
+resource "azurerm_resource_group" "example" {
+  name     = "rg-prod-eus-ai"
   location = local.location
   tags     = local.tags
 }
 
-module "nist_sp_800_53_r5" {
-  source = "../../modules/nist-sp-800-53-r5"
-
-  management_group_id = "/providers/Microsoft.Management/managementGroups/mg-gsoc-root"
-  enforce             = false
-  environment         = "enterprise"
-}
-
 module "azure_openai" {
-  source = "../../modules/azure-openai"
+  source = "../../"
 
-  name                               = "aoai-prod-eus-governance01"
+  name                               = "aoai-prod-eus-platform01"
   location                           = local.location
-  resource_group_name                = module.rg_governance.name
+  resource_group_name                = azurerm_resource_group.example.name
   sku_name                           = "S0"
-  custom_subdomain_name              = "aoai-prod-eus-governance01"
+  custom_subdomain_name              = "aoai-prod-eus-platform01"
   public_network_access_enabled      = true
   outbound_network_access_restricted = false
   enable_diagnostics                 = false
@@ -52,6 +43,14 @@ module "azure_openai" {
       model_format   = "OpenAI"
       model_name     = "gpt-4o-mini"
       model_version  = "2024-07-18"
+      scale_type     = "Standard"
+      scale_capacity = 1
+    },
+    {
+      name           = "text-embedding-3-large"
+      model_format   = "OpenAI"
+      model_name     = "text-embedding-3-large"
+      model_version  = "1"
       scale_type     = "Standard"
       scale_capacity = 1
     }

@@ -1,9 +1,48 @@
+#!/bin/bash
+
+# Script to auto-generate MODULE_INDEX.md from module directory structure
+# Usage: ./scripts/generate-module-index.sh
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+MODULES_DIR="$PROJECT_ROOT/modules"
+OUTPUT_FILE="$PROJECT_ROOT/MODULE_INDEX.md"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+echo -e "${YELLOW}Generating MODULE_INDEX.md...${NC}"
+
+# Check if modules directory exists
+if [ ! -d "$MODULES_DIR" ]; then
+    echo -e "${RED}Error: modules directory not found at $MODULES_DIR${NC}"
+    exit 1
+fi
+
+# Create temporary output file
+TEMP_FILE=$(mktemp)
+
+# Count modules robustly across shells
+TOTAL_MODULES=$(find "$MODULES_DIR" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d '[:space:]')
+GENERATED_AT=$(date '+%Y-%m-%d %H:%M:%S')
+
+# Write header
+cat > "$TEMP_FILE" <<EOF
 # Module Index
 
 > **Note:** This index is auto-generated. For details, see the [Module Generation Script](#auto-generation).
 
-**Last Updated:** 2026-06-17 15:03:10
-**Total Modules:** 25
+**Last Updated:** $GENERATED_AT
+**Total Modules:** $TOTAL_MODULES
+EOF
+
+# Add sections
+cat >> "$TEMP_FILE" << 'EOF'
 
 ## Quick Navigation
 
@@ -171,7 +210,7 @@
 - **Status:** 🔄 In Development
 - **Purpose:** Azure OpenAI cognitive account with model deployments, diagnostics, and network controls
 - **Documentation:** [azure-openai/README.md](./modules/azure-openai/README.md)
-- **Example:** [azure-openai](./examples/azure-openai)
+- **Example:** [basic](./modules/azure-openai/examples/basic)
 - **Inputs:** `name`, `location`, `resource_group_name`, `model_deployments`
 - **Outputs:** `id`, `name`, `endpoint`, `principal_id`, `model_deployment_ids`, `private_endpoint_id`
 - **Security Features:** Private endpoint support, network ACLs, diagnostic logging
@@ -305,3 +344,11 @@ The script:
 - [Release Strategy](./docs/standards/RELEASE_STRATEGY.md)
 - [Module Development Guide](./docs/module-usage.md)
 - [Terratest Tests](./tests/)
+EOF
+
+# Copy temp file to output
+mv "$TEMP_FILE" "$OUTPUT_FILE"
+
+echo -e "${GREEN}✓ MODULE_INDEX.md generated successfully!${NC}"
+echo -e "${GREEN}✓ Total modules: $TOTAL_MODULES${NC}"
+echo -e "${GREEN}✓ Output: $OUTPUT_FILE${NC}"
