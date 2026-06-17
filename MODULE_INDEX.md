@@ -2,7 +2,7 @@
 
 > **Note:** This index is auto-generated. For details, see the [Module Generation Script](#auto-generation).
 
-**Last Updated:** 2026-06-17 15:03:10
+**Last Updated:** 2026-06-17 19:50:50
 **Total Modules:** 25
 
 ## Quick Navigation
@@ -171,7 +171,7 @@
 - **Status:** 🔄 In Development
 - **Purpose:** Azure OpenAI cognitive account with model deployments, diagnostics, and network controls
 - **Documentation:** [azure-openai/README.md](./modules/azure-openai/README.md)
-- **Example:** [azure-openai](./examples/azure-openai)
+- **Example:** [basic](./modules/azure-openai/examples/basic)
 - **Inputs:** `name`, `location`, `resource_group_name`, `model_deployments`
 - **Outputs:** `id`, `name`, `endpoint`, `principal_id`, `model_deployment_ids`, `private_endpoint_id`
 - **Security Features:** Private endpoint support, network ACLs, diagnostic logging
